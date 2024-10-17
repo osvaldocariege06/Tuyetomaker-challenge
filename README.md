@@ -24,7 +24,7 @@ A oportunidade é 80% Remota.
 
 **Obrigatórios:**
 
-- Mínimo 2 ano de experiência em desenvolvimento de sites e sistemas em NodeJS, PHP, Python, ReactJS ou Nextjs.
+- Mínimo 2 ano de experiência em desenvolvimento de sites e sistemas em uma das seguintes tecnologias: NodeJS, PHP, Python, ReactJS ou Nextjs.
 - Conhecimentos em Docker. (Não obirgatório)
 - Conhecimentos em recolha de dados e análise de dados.
 - Conhecimentos em modelagem de banco de dados.
