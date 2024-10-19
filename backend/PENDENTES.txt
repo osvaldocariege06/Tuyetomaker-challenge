@@ -1,0 +1,1 @@
+ - [X]: Resolver o bug arquivo "patientService". Code: bcrypt.compare(password, patient.password)
