@@ -1,8 +1,8 @@
-import express, { NextFunction } from 'express'
+import express from 'express'
 
 import cors from 'cors'
-import helmet from 'helmet' // Boa prática para segurança
-import morgan from 'morgan' // Logger para monitorar as requisições
+import helmet from 'helmet'
+import morgan from 'morgan'
 
 import patientRoutes from './routes/patientRoutes'
 import doctorRoutes from './routes/doctorRoutes'
@@ -12,9 +12,9 @@ export const app = express()
 
 // Configuração do CORS
 const corsOptions = {
-  origin: ['http://localhost:3000'], // Permitir apenas o front-end local
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Métodos permitidos
-  credentials: true, // Permitir envio de cookies e credenciais
+  origin: ['http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true,
 }
 
 app.use(cors(corsOptions))

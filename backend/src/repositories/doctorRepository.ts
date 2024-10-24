@@ -94,8 +94,6 @@ export class DoctorRepository implements IDoctorRepositories {
   }
 
   async update(doctorId: string, data: IUpdateDoctor): Promise<IDoctor | null> {
-    const { email, name, permissions, role, availableTimes, specialties } = data
-
     const updateData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== undefined)
     )
@@ -108,35 +106,6 @@ export class DoctorRepository implements IDoctorRepositories {
         availableTimes: true,
       },
     })
-
-    // return prisma.doctor.update({
-    //   where: { id: doctorId },
-    //   data: {
-    //     email,
-    //     name,
-    //     permissions,
-    //     role,
-    //     specialties: {
-    //       deleteMany: {},
-    //       create: specialties.map((specialtyName: string) => ({
-    //         specialty: {
-    //           connectOrCreate: {
-    //             where: { name: specialtyName },
-    //             create: { name: specialtyName },
-    //           },
-    //         },
-    //       })),
-    //     },
-    //     availableTimes: {
-    //       deleteMany: {},
-    //       create: availableTimes,
-    //     },
-    //   },
-    //   include: {
-    //     specialties: { include: { specialty: true } },
-    //     availableTimes: true,
-    //   },
-    // })
   }
 
   async delete(doctorId: string) {
@@ -148,7 +117,6 @@ export class DoctorRepository implements IDoctorRepositories {
       where: { doctorId },
     })
 
-    // Remover o médico
     const deletedDoctor = await prisma.doctor.delete({
       where: { id: doctorId },
     })
