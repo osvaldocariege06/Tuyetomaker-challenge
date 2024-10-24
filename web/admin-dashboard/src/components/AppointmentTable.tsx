@@ -52,9 +52,12 @@ export function AppointmentTable({ appointments }: appointmentsTablesProps) {
         <TableBody>
           {appointments?.map(row => (
             <TableRow key={row.id} className="table-row">
-              <TableCell key={row.doctor.id} className="font-medium flex gap-4 justify-start">
+              <TableCell
+                key={row.doctor.id}
+                className="font-medium flex gap-4 justify-start"
+              >
                 <AppointmentByPatientModal patientId={row.patientId}>
-                  <Button variant={'ghost'} className='pl-0'>
+                  <Button variant={'ghost'} className="pl-0">
                     <Avatar>
                       <AvatarImage
                         src="https://github.com/shadcn.png"
@@ -89,11 +92,18 @@ export function AppointmentTable({ appointments }: appointmentsTablesProps) {
                 </div>
               </TableCell>
               <TableCell className="hidden lg:table-cell">
-
-                {row.status === AppointmentStatus.CONFIRMED && <CheckCircle2 className={'text-blue-600'} />}
-                {row.status === AppointmentStatus.CANCELED && <CircleDashed className={'text-pink-600'} />}
-                {row.status === AppointmentStatus.RESCHEDULED && <CircleDashed className={'text-yellow-600'} />}
-                {row.status === AppointmentStatus.PENDING && <CircleDashed className={'text-zinc-600'} />}
+                {row.status === AppointmentStatus.CONFIRMED && (
+                  <CheckCircle2 className={'text-blue-600'} />
+                )}
+                {row.status === AppointmentStatus.CANCELED && (
+                  <CircleDashed className={'text-pink-600'} />
+                )}
+                {row.status === AppointmentStatus.RESCHEDULED && (
+                  <CircleDashed className={'text-yellow-600'} />
+                )}
+                {row.status === AppointmentStatus.PENDING && (
+                  <CircleDashed className={'text-zinc-600'} />
+                )}
               </TableCell>
               <TableCell className="hidden lg:table-cell">
                 {format(row.dateTime, 'dd/MM/yyy HH:mm')}

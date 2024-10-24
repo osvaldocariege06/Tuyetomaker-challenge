@@ -17,8 +17,6 @@ interface DoctorTableProps {
 }
 
 export default function DoctorTable({ doctors }: DoctorTableProps) {
-
-
   return (
     <Table>
       <TableHeader>
@@ -35,35 +33,33 @@ export default function DoctorTable({ doctors }: DoctorTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {doctors
-          ?.map(row => (
-            <TableRow key={row.id} className="">
-              <TableCell className="font-medium flex gap-4">
-                <Avatar>
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>{getIniciais(row.name)}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1">
-                  <span className="text-gray-600">{row.name}</span>
-                  <span className="text-xs">{row.email}</span>
-                </div>
-              </TableCell>
-              <TableCell className="hidden lg:table-cell">
-                {row.role === 'ADMIN' && 'Administrador'}
-                {row.role === 'DOCTOR' && 'Médico'}
-              </TableCell>
-              <TableCell className={'text-right font-bold text-rose-600'}>
-                <div className="flex items-center justify-end gap-4">
-                  <UpdateDoctorModal doctorId={row.id} />
-                  <DeleteDoctorModal doctorId={row.id} />
-                </div>
-              </TableCell>
-            </TableRow>
-          ))
-          .slice(0, 6)}
+        {doctors?.map(row => (
+          <TableRow key={row.id} className="">
+            <TableCell className="font-medium flex gap-4">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
+                <AvatarFallback>{getIniciais(row.name)}</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col gap-1">
+                <span className="text-gray-600">{row.name}</span>
+                <span className="text-xs">{row.email}</span>
+              </div>
+            </TableCell>
+            <TableCell className="hidden lg:table-cell">
+              {row.role === 'ADMIN' && 'Administrador'}
+              {row.role === 'DOCTOR' && 'Médico'}
+            </TableCell>
+            <TableCell className={'text-right font-bold text-rose-600'}>
+              <div className="flex items-center justify-end gap-4">
+                <UpdateDoctorModal doctorId={row.id} />
+                <DeleteDoctorModal doctorId={row.id} />
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   )

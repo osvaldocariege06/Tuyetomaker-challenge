@@ -19,8 +19,6 @@ export enum WeekDayStatus {
   FRIDAY = 'SEXTA-FEIRA',
 }
 
-
-
 export interface CalendarProps {
   itemsData: string[]
   day: WeekDayStatus | string
@@ -41,16 +39,10 @@ export function DayWeekPicker({ itemsData, day, setDay }: CalendarProps) {
       </PopoverTrigger>
       <PopoverContent className="mt-2 p-2 flex flex-col gap-1 w-[220px]">
         {itemsData.map(item => (
-          <Button
-            key={item}
-            variant={'outline'}
-            onClick={() => setDay(item)}
-          >
+          <Button key={item} variant={'outline'} onClick={() => setDay(item)}>
             {item}
           </Button>
         ))}
-
-
       </PopoverContent>
     </Popover>
   )

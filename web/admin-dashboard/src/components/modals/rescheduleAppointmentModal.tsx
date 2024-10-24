@@ -36,10 +36,11 @@ export function RescheduleAppointmentModalModal({
     await rescheduleAppointment(appointmentId, newDateTime)
     queryClient.invalidateQueries({ queryKey: ['doctors'] })
 
-    toast('Agendamento reajustado com sucesso!')
+    toast.success('Agendamento reajustado com sucesso!')
+    window.document.location.reload()
   }
 
-  if (!appointmentId) return toast('Agendamento não encontrado!')
+  if (!appointmentId) return toast.info('Agendamento não encontrado!')
 
   return (
     <Dialog>
@@ -53,8 +54,13 @@ export function RescheduleAppointmentModalModal({
         </DialogHeader>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant={'outline'} className="flex justify-between items-center">
-              {format(newDateTime, "EEEE, 'dia' dd 'de' MMMM", { locale: ptBR })}
+            <Button
+              variant={'outline'}
+              className="flex justify-between items-center"
+            >
+              {format(newDateTime, "EEEE, 'dia' dd 'de' MMMM", {
+                locale: ptBR,
+              })}
               <Clock />
             </Button>
           </PopoverTrigger>

@@ -22,7 +22,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname()
   const Router = useRouter()
-  const { logout, isAuthenticated, user, } = useAuthStore()
+  const { logout, isAuthenticated, user } = useAuthStore()
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -81,9 +81,7 @@ export default function AdminLayout({
                   src="https://github.com/shadcn.png"
                   alt="@shadcn"
                 />
-                <AvatarFallback>
-                  {getIniciais(user?.name)}
-                </AvatarFallback>
+                <AvatarFallback>{getIniciais(user?.name)}</AvatarFallback>
               </Avatar>
               <ChevronDown className="size-5 text-zinc-100" />
             </Button>

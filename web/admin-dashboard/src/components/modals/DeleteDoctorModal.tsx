@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,30 +7,33 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useStore } from "@/stores/useStore"
-import { useQueryClient } from "@tanstack/react-query"
-import { Trash2 } from "lucide-react"
-import { toast } from "sonner"
+} from '@/components/ui/dialog'
+import { useDoctorStore } from '@/stores/useDoctorStore'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface DeleteDoctorModalProps {
   doctorId: string
 }
 
-
 export function DeleteDoctorModal({ doctorId }: DeleteDoctorModalProps) {
-  const { remove } = useStore()
+  const { remove } = useDoctorStore()
   const queryClient = useQueryClient()
 
+  const { mutateAsync: removeFn } = useMutation({
+    mutationFn: remove,
+  })
 
   const onSubmit = async () => {
-    await remove(doctorId)
+    await removeFn(doctorId)
+
+    toast.success('Médico eliminado com sucesso!')
     queryClient.invalidateQueries({ queryKey: ['doctors'] })
+    window.document.location.reload()
+  }
 
-    toast('Médico eliminado com sucesso!');
-  };
-
-  if (!doctorId) return toast("Médico não encontrado!")
+  if (!doctorId) return toast.error('Médico não encontrado!')
 
   return (
     <Dialog>
@@ -48,7 +51,9 @@ export function DeleteDoctorModal({ doctorId }: DeleteDoctorModalProps) {
         </DialogHeader>
 
         <DialogFooter>
-          <Button variant={'destructive'} type="submit" onClick={onSubmit}>Eliminar</Button>
+          <Button variant={'destructive'} type="submit" onClick={onSubmit}>
+            Eliminar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

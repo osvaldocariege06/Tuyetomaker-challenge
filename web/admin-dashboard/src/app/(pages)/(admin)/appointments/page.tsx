@@ -30,7 +30,7 @@ function Page() {
     let filtered = appointments
 
     if (status) {
-      filtered = filtered?.filter((appointment) => appointment.status === status);
+      filtered = filtered?.filter(appointment => appointment.status === status)
     }
 
     if (patientNameFilter) {
@@ -56,7 +56,6 @@ function Page() {
           className="w-[400px]"
         />
         <PopoverStatus status={status} setStatus={setStatus} />
-
       </div>
 
       <AppointmentTable appointments={filteredAppointments} />

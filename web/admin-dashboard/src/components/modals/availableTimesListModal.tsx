@@ -68,23 +68,23 @@ export function AvailableTimesListModal({
       })
     )
     setItemsData(prevState => [...prevState, day])
-    toast('Horário disponível removido!')
+    toast.success('Horário disponível removido!')
   }
 
   const onSubmit: SubmitHandler<FormData> = async data => {
     if (!itemsData.includes(day)) return
     if (!data.start || !data.end) {
-      return toast('Preencha todos os campos!', {
+      return toast.warning('Preencha todos os campos!', {
         style: { backgroundColor: '#d45', color: '#fff' },
       })
     }
     if (availableTimesItems.length === 5) {
-      return toast('Atingiu o máximo de dias!', {
+      return toast.warning('Atingiu o máximo de dias!', {
         style: { backgroundColor: '#d45', color: '#fff' },
       })
     }
     if (data.start > data.end) {
-      return toast('Horário inicial não pode ser maior que o final!', {
+      return toast.warning('Horário inicial não pode ser maior que o final!', {
         style: { backgroundColor: '#d45', color: '#fff' },
       })
     }
@@ -95,7 +95,7 @@ export function AvailableTimesListModal({
       { day, start: data.start, end: data.end },
     ])
 
-    toast('Horário disponível adicionado!')
+    toast.success('Horário disponível adicionado!')
   }
 
   return (

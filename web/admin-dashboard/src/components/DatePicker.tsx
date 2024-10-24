@@ -4,8 +4,8 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import type { Dispatch, SetStateAction } from 'react'
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/style.css";
+import { DayPicker } from 'react-day-picker'
+import 'react-day-picker/style.css'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'

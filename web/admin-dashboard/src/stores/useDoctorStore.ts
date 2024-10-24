@@ -17,20 +17,28 @@ type User = {
   availableTimes: IAvailableTimesItems[]
 }
 
+type IUpdate = {
+  name: string | undefined
+  email: string | undefined
+  password: string | undefined
+  role: RoleState
+  specialties: string[]
+  availableTimes: IAvailableTimesItems[]
+}
 type ICreate = Omit<User, 'id' | 'permissions'>
 
-type useStoreState = {
+type useDoctorStoreState = {
   user: User | null
   token: string | null
   isAuthenticated: boolean
   findAll: () => Promise<User[] | undefined>
   findById: (id: string) => Promise<User | undefined>
   create: (data: ICreate) => Promise<User | undefined>
-  update: (doctorId: string, data: ICreate) => Promise<User | undefined>
+  update: (doctorId: string, data: IUpdate) => Promise<User | undefined>
   remove: (id: string) => Promise<void>
 }
 
-export const useStore = createStore<useStoreState>(() => ({
+export const useDoctorStore = createStore<useDoctorStoreState>(() => ({
   user: null,
   token: null,
   isAuthenticated: false,
@@ -116,7 +124,7 @@ export const useStore = createStore<useStoreState>(() => ({
 
   update: async (
     doctorId: string,
-    { name, email, role, password }: ICreate
+    { name, email, role, password }: IUpdate
   ): Promise<User | undefined> => {
     const token = Cookies.get('token')
 
