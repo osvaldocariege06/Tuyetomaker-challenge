@@ -1,69 +1,81 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
 
 model Patient {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  password     String
-  phone        String?
-  photo        String?
-  birthDate    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  appointments Appointment[]
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  birthDate DateTime
 
-  @@map("patients")
+  appointments Appointment[]
 }
 
 model Doctor {
-  id              String   @id @default(uuid())
-  name            String
-  email           String   @unique
-  specialty       String
-  photo           String?
-  password        String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  availableTimes  String[]
-  appointments Appointment[]
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           Role            @default(DOCTOR)
+  permissions    String[]        // Lista de permissões
+  specialties    DoctorSpecialty[]
+  availableTimes AvailableTime[]
+  
+  appointments   Appointment[]
+}
 
-  @@map("doctors")
+model Specialty {
+  id      String          @id @default(uuid())
+  name    String          @unique
+  doctors DoctorSpecialty[]
+}
+
+model AvailableTime {
+  id       String  @id @default(uuid())
+  day      String  
+  start    String  
+  end      String  
+  doctorId String
+  doctor   Doctor  @relation(fields: [doctorId], references: [id])
 }
 
 model Appointment {
-  id        String   @id @default(uuid())
-  patientId String
-  doctorId  String
-  dateTime  DateTime
-  status    Status   @default(PENDING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(uuid())
+  patientId  String
+  doctorId   String
+  dateTime   DateTime
+  status     AppointmentStatus @default(PENDING)
+  rescheduledAt DateTime?
 
-  patient   Patient  @relation(fields: [patientId], references: [id])
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
-
-  @@index([patientId])
-  @@index([doctorId])
-
-  @@map("appointments")
+  patient    Patient @relation(fields: [patientId], references: [id])
+  doctor     Doctor  @relation(fields: [doctorId], references: [id])
 }
 
-enum Status {
+model DoctorSpecialty {
+  doctorId    String
+  specialtyId String
+
+  doctor      Doctor    @relation(fields: [doctorId], references: [id])
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
+
+  @@id([doctorId, specialtyId])
+}
+
+enum AppointmentStatus {
   PENDING
   CONFIRMED
   CANCELED
+  RESCHEDULED
+}
+
+enum Role {
+  DOCTOR
+  ADMIN
 }

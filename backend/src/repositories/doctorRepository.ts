@@ -1,56 +1,157 @@
-import type { Doctor } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import bcrypt from 'bcryptjs'
 
-import { prisma } from '../lib/prisma'
-import type { DoctorRepositories, DoctorRequest } from '../models/doctor'
+import type {
+  ICreateDoctor,
+  IDoctorRepositories,
+  IUpdateDoctor,
+} from '../models/doctor'
+import type { Doctor as IDoctor } from '@prisma/client'
 
-export class DoctorRepository implements DoctorRepositories {
-  async findDoctorByEmail(email: string): Promise<Doctor | null> {
-    return prisma.doctor.findUnique({ where: { email } })
+export class DoctorRepository implements IDoctorRepositories {
+  async findAll(): Promise<IDoctor[] | null> {
+    return await prisma.doctor.findMany({
+      include: { specialties: true, availableTimes: true },
+    })
   }
 
-  async findDoctorById(id: string): Promise<Doctor | null> {
-    return prisma.doctor.findFirst({ where: { id } })
+  async findById(doctorId: string): Promise<IDoctor | null> {
+    return await prisma.doctor.findUnique({
+      where: { id: doctorId },
+      include: {
+        specialties: { include: { specialty: true } },
+        availableTimes: true,
+      },
+    })
   }
 
-  async findAllDoctor(): Promise<Doctor[] | null> {
-    return prisma.doctor.findMany()
+  async findByEmail(email: string): Promise<IDoctor | null> {
+    console.log('email: ', email)
+    return await prisma.doctor.findUnique({
+      where: { email },
+      include: { specialties: true, availableTimes: true },
+    })
   }
 
-  async register(data: DoctorRequest): Promise<Doctor | null> {
-    const hashedPassword = await bcrypt.hash(data.password, 10)
-    return await prisma.doctor.create({
+  async findBySpecialty(specialtyId: string): Promise<IDoctor[] | null> {
+    return await prisma.doctor.findMany({
+      where: { specialties: { some: { specialtyId } } },
+      include: { specialties: true },
+    })
+  }
+
+  async findAvailableTimes(doctorId: string) {
+    return await prisma.availableTime.findMany({
+      where: { doctorId },
+    })
+  }
+
+  async register(data: ICreateDoctor): Promise<IDoctor | null> {
+    const {
+      specialties,
+      availableTimes,
+      name,
+      email,
+      password,
+      permissions,
+      role,
+    } = data
+
+    return prisma.doctor.create({
       data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-        photo: data.photo,
-        specialty: data.specialty,
+        name,
+        email,
+        password,
+        permissions,
+        role,
+        specialties: {
+          create: specialties.map((specialtyName: string) => ({
+            specialty: {
+              connectOrCreate: {
+                where: { name: specialtyName },
+                create: { name: specialtyName },
+              },
+            },
+          })),
+        },
+        availableTimes: {
+          create: availableTimes,
+        },
+      },
+      include: {
+        specialties: { include: { specialty: true } },
+        availableTimes: true,
       },
     })
   }
 
-  async update(id: string, data: DoctorRequest): Promise<Doctor | null> {
-    const hashedPassword = await bcrypt.hash(data.password, 10)
-    return await prisma.doctor.update({
-      where: {
-        id,
-      },
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-        photo: data.photo,
-        specialty: data.specialty,
-      },
-    })
+  async login(email: string, password: string) {
+    const doctor = await prisma.doctor.findUnique({ where: { email } })
+    if (!doctor) return null
+
+    const isPasswordValid = await bcrypt.compare(password, doctor.password)
+    return isPasswordValid ? doctor : null
   }
 
-  async delete(id: string) {
-    return await prisma.doctor.delete({
-      where: {
-        id,
+  async update(doctorId: string, data: IUpdateDoctor): Promise<IDoctor | null> {
+    const { email, name, permissions, role, availableTimes, specialties } = data
+
+    const updateData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== undefined)
+    )
+
+    return prisma.doctor.update({
+      where: { id: doctorId },
+      data: updateData,
+      include: {
+        specialties: { include: { specialty: true } },
+        availableTimes: true,
       },
     })
+
+    // return prisma.doctor.update({
+    //   where: { id: doctorId },
+    //   data: {
+    //     email,
+    //     name,
+    //     permissions,
+    //     role,
+    //     specialties: {
+    //       deleteMany: {},
+    //       create: specialties.map((specialtyName: string) => ({
+    //         specialty: {
+    //           connectOrCreate: {
+    //             where: { name: specialtyName },
+    //             create: { name: specialtyName },
+    //           },
+    //         },
+    //       })),
+    //     },
+    //     availableTimes: {
+    //       deleteMany: {},
+    //       create: availableTimes,
+    //     },
+    //   },
+    //   include: {
+    //     specialties: { include: { specialty: true } },
+    //     availableTimes: true,
+    //   },
+    // })
+  }
+
+  async delete(doctorId: string) {
+    await prisma.doctorSpecialty.deleteMany({
+      where: { doctorId },
+    })
+
+    await prisma.availableTime.deleteMany({
+      where: { doctorId },
+    })
+
+    // Remover o médico
+    const deletedDoctor = await prisma.doctor.delete({
+      where: { id: doctorId },
+    })
+    return deletedDoctor
   }
 }

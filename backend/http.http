@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/doctor/
+
+
+{
+  "name": "Dr. John Doe",
+  "email": "john.doe@example.com",
+  "password": "securepassword123",
+  "phone": "123-456-7890",
+  "permissions": ["view_appointments", "edit_profile"]
+}

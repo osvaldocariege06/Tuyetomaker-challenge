@@ -2,19 +2,27 @@ import type { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { env } from '../types/env'
 
+export interface AuthenticatedRequest extends Request {
+  user?: { id: string }
+}
+
 export function authenticateToken(
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) {
-  const authHeader = req.headers.authorization
-  const token = authHeader?.split(' ')[1]
+): void {
+  const token = req.header('Authorization')?.replace('Bearer ', '')
 
-  if (!token) return res.sendStatus(401)
+  if (!token) {
+    res.status(401).json({ message: 'Access denied, no token provided' })
+    return
+  }
 
-  jwt.verify(token, env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    req.user = user
+  try {
+    const decoded = jwt.verify(token, env.JWT_SECRET) as { id: string }
+    req.user = { id: decoded.id } // Atribui o ID do usuário autenticado
     next()
-  })
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid or expired token' })
+  }
 }

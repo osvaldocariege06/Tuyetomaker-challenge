@@ -1,19 +1,34 @@
-import type { Doctor } from '@prisma/client'
+import type { Doctor as IDoctor } from '@prisma/client'
 
-export type DoctorRequest = Omit<
-  Doctor,
-  'id' | 'availableTimes' | 'appointments' | 'createdAt' | 'updatedAt'
->
-export type DoctorUpdateRequest = Omit<
-  Doctor,
+export type ICreateDoctor = Omit<
+  IDoctor,
+  'id' | 'appointments' | 'createdAt' | 'updatedAt'
+> & {
+  specialties: string[]
+  availableTimes: {
+    day: string
+    start: string
+    end: string
+  }[]
+}
+export type IUpdateDoctor = Omit<
+  IDoctor,
   'appointments' | 'createdAt' | 'updatedAt'
->
+> & {
+  specialties: string[]
+  availableTimes: {
+    day: string
+    start: string
+    end: string
+  }[]
+}
 
-export interface DoctorRepositories {
-  register: (data: DoctorRequest) => Promise<Doctor | null>
-  findDoctorByEmail: (email: string) => Promise<Doctor | null>
-  findDoctorById: (id: string) => Promise<Doctor | null>
-  findAllDoctor: () => Promise<Doctor[] | null>
-  update: (id: string, data: DoctorUpdateRequest) => Promise<Doctor | null>
+export interface IDoctorRepositories {
+  register: (data: ICreateDoctor) => Promise<IDoctor | null>
+  findById: (id: string) => Promise<IDoctor | null>
+  findByEmail: (email: string) => Promise<IDoctor | null>
+  findBySpecialty: (specialtyId: string) => Promise<IDoctor[] | null>
+  findAll: () => Promise<IDoctor[] | null>
+  update: (id: string, data: IUpdateDoctor) => Promise<IDoctor | null>
   delete: (id: string) => void
 }
