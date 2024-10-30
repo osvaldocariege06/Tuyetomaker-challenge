@@ -27,7 +27,17 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/poppins-fonts/Poppins-Bold.ttf",
+            "./assets/fonts/poppins-fonts/Poppins-SemiBold.ttf",
+            "./assets/fonts/poppins-fonts/Poppins-Regular.ttf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
