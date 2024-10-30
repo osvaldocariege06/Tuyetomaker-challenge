@@ -34,7 +34,7 @@ export const usePatientStore = create<useStoreState>(() => ({
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
       try {
-        const response = await api.get<IPatient[]>("/patient")
+        const response = await api.get<IPatient[]>("/patient/all")
         return response.data
 
       } catch (error) {
