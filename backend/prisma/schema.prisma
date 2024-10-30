@@ -16,6 +16,22 @@ model Patient {
   birthDate DateTime
 
   appointments Appointment[]
+
+  UserToken UserToken[]
+}
+
+model UserToken {
+  id        String    @id @default(uuid())
+  patientId String
+  token     String    @unique
+  expiresAt DateTime? // Opcional, para tokens que expiram
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relacionamento com o modelo Patient
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@index([patientId]) // Índice para buscas por paciente
 }
 
 model Doctor {
@@ -50,9 +66,14 @@ model Appointment {
   id            String            @id @default(uuid())
   patientId     String
   doctorId      String
-  dateTime      DateTime
+  specialty     String
+  date          DateTime          @default(now())
+  time          String
   status        AppointmentStatus @default(PENDING)
   rescheduledAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   patient Patient @relation(fields: [patientId], references: [id])
   doctor  Doctor  @relation(fields: [doctorId], references: [id])

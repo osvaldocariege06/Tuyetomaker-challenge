@@ -50,9 +50,13 @@ export class PatientRepository implements IPatientRepository {
   }
 
   async update(patientId: string, data: IUpdatePatient) {
-    return await prisma.patient.update({
+    const updateData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== undefined)
+    )
+
+    return prisma.patient.update({
       where: { id: patientId },
-      data,
+      data: updateData,
     })
   }
 

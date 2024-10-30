@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import patientRoutes from './routes/patientRoutes'
 import doctorRoutes from './routes/doctorRoutes'
 import appointmentRoutes from './routes/appointmentRoutes'
+import specialtyRoutes from './routes/specialtyRoutes'
 
 export const app = express()
 
@@ -26,3 +27,4 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api/patient', patientRoutes)
 app.use('/api/doctor', doctorRoutes)
 app.use('/api/appointment', appointmentRoutes)
+app.use('/api/specialty', specialtyRoutes)

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { PatientRepository } from '../repositories/patientRepository'
 import { env } from '../types/env'
+import dayjs from 'dayjs'
 
 const patientRepository = new PatientRepository()
 
@@ -44,22 +45,39 @@ export class PatientController {
 
   async create(req: Request, res: Response) {
     const { name, email, password, phone, birthDate } = req.body
+
     const existingUser = await patientRepository.findByEmail(email)
     if (existingUser) throw new Error('Email already registered')
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const formattedData = {
+      ...req.body,
+      password: hashedPassword,
+      birthDate: new Date(birthDate).toISOString(),
+    }
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10)
-      const patient = await patientRepository.create({
-        name,
-        email,
-        password: hashedPassword,
-        phone,
-        birthDate: new Date(birthDate),
-      })
+      const patient = await patientRepository.create(formattedData)
 
-      res.status(201).json(patient)
+      const payload = {
+        id: patient.id,
+        name: patient.name,
+      }
+
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: '5d' })
+
+      res.status(201).json({
+        token,
+        patient: {
+          id: patient.id,
+          name: patient.name,
+          email: patient.email,
+          phone: patient.phone,
+          birthDate: patient.birthDate,
+        },
+      })
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' })
+      res.status(500).json({ message: error })
     }
   }
 
@@ -76,7 +94,7 @@ export class PatientController {
         name: patient.name,
       }
 
-      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: '1h' })
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: '5d' })
 
       return res.status(200).json({ token })
     } catch (error) {
@@ -103,7 +121,7 @@ export class PatientController {
 
       res.status(200).json(updatedPatient)
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' })
+      res.status(500).json({ message: error })
     }
   }
 

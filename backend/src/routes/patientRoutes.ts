@@ -9,15 +9,15 @@ const patientController = new PatientController()
 
 app.use(express.json())
 
-router.get('/', authenticateToken, patientController.findAll)
+router.get('/all', authenticateToken, patientController.findAll)
 router.get('/:patientId', authenticateToken, patientController.findById)
 router.get(
   '/:patientId/appointments',
   authenticateToken,
   patientController.findAppointmentsByPatientId
 )
-router.post('/', patientController.create)
 router.post('/login', patientController.login)
+router.post('/create', patientController.create)
 router.put('/:patientId', authenticateToken, patientController.update)
 router.delete('/:patientId', authenticateToken, patientController.delete)
 

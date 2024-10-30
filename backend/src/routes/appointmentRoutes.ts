@@ -18,6 +18,23 @@ router.get(
   authenticateToken,
   appointmentController.findPastAppointments
 )
+
+router.get(
+  '/upcoming/:patientId',
+  authenticateToken,
+  appointmentController.findUpcomingAppointmentsByPatientId
+)
+router.get(
+  '/past/:patientId',
+  authenticateToken,
+  appointmentController.findPastAppointmentsByPatientId
+)
+router.get(
+  '/filter',
+  authenticateToken,
+  appointmentController.filterAppointments
+)
+
 router.get('/:appointmentId', authenticateToken, appointmentController.findById)
 
 router.post('/', authenticateToken, appointmentController.createAppointment)
